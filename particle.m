@@ -62,9 +62,9 @@ classdef particle < handle                 % Class simulating an experiment with
       A_R = sqrt(2*obj.D_R*dt);
       A_T = sqrt(2*obj.D_T*dt);
       
-      obj.x    = [obj.x(1)  , zeros([1, N_time-1])];         % Variable to store x position  at each time
-      obj.y    = [obj.y(1)  , zeros([1, N_time-1])];         % Variable to store x position  at each time
-      obj.phi  = [obj.phi(1), zeros([1, N_time-1])];         % Variable to store orientation at each time
+      obj.x    = [obj.x(1)  , zeros([1, N_time-1])]; % Variable to store x position  at each time
+      obj.y    = [obj.y(1)  , zeros([1, N_time-1])]; % Variable to store x position  at each time
+      obj.phi  = [obj.phi(1), zeros([1, N_time-1])]; % Variable to store orientation at each time
       
       for k = 1:N_time-1
         % Euler-Maruyama method for stochastic integration
@@ -73,13 +73,12 @@ classdef particle < handle                 % Class simulating an experiment with
         
         obj.phi(k+1) = obj.phi(k) + obj.omega*dt + A_R*w_phi(k);
         
-        % Handle border
+        % Handle border                          % For completness, I should make sure the particle was not reflected into another obstacle !
         for j=1:length(obstacles)                % For each boundary
-          
           if obstacles(j).was_penetrated(obj.x(k+1), obj.y(k+1))     % If the particle got inside the boundary
-            [obj.x(k+1), obj.y(k+1)] = obstacles(j).reflect(obj.x(k), obj.y(k), obj.x(k+1), obj.y(k+1));     % Particle gets reflected
+            [obj.x(k+1), obj.y(k+1)] = obstacles(j).reflect(obj.x(k), obj.y(k), obj.x(k+1), obj.y(k+1));     % Particle gets reflected upon hitting the boundary
+         %  j=1; % Handle multiple reflections
           end
-          
         end  % loop on boundaries
         
       end  % loop on time
