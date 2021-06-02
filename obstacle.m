@@ -109,7 +109,6 @@ classdef obstacle < handle                       % Class simulating an experimen
 %       end
     end
     
-    
     function show(obj)
       pgon = polyshape(obj.boundary_x, obj.boundary_y);
       plot(pgon, 'FaceColor', obj.color, 'FaceAlpha', obj.alpha)

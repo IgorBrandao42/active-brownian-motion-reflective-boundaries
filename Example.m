@@ -1,15 +1,14 @@
-% I am using InterX from https://www.mathworks.com/matlabcentral/fileexchange/22441-curve-intersections?focused=5165138&tab=function
-% I moved from InterX to intersections: https://www.mathworks.com/matlabcentral/fileexchange/11837-fast-and-robust-curve-intersections
+% I am using intersections: https://www.mathworks.com/matlabcentral/fileexchange/11837-fast-and-robust-curve-intersections
 % Remember to cite!
 
-figure(2)
+fig = figure(2)
 clf
 
 x0     = -0.1e-6;                                     % Initial x coordinate [m]
 y0     = +0.0e-6;                                     % Initial y coordinate [m]
 phi0   = 0;                                      % Initial orientation[rad]
 R0     = 1e-6;                                   % Particle radius[m]
-v0     = 3e-6;                                   % Self-propulsion velocity [m/s]
+v0     = 1e-6;                                   % Self-propulsion velocity [m/s]
 omega0 = 0;                                     % [rad/s] (omega>0 -> anti-clockwise; omega<0 -> clockwise)
 
 %color0 = [0,0,1];
@@ -23,9 +22,9 @@ var_T = sqrt( subject.D_T*(t(end)-t(1)) );
 x_bound = [-var_T, -var_T, +var_T, +var_T, -var_T];
 y_bound = [-var_T, +var_T, +var_T, -var_T, -var_T];
 
-var_T = 0.1*var_T;
-x_bound_interior = [-var_T, -var_T, +var_T, +var_T, -var_T];
-y_bound_interior = [-var_T, +var_T, +var_T, -var_T, -var_T];
+% var_T = 0.1*var_T;
+% x_bound_interior = [-var_T, -var_T, +var_T, +var_T, -var_T];
+% y_bound_interior = [-var_T, +var_T, +var_T, -var_T, -var_T];
 
 % Triangle
 % x_bound = [-var_T, -var_T, +var_T, -var_T];
@@ -33,7 +32,19 @@ y_bound_interior = [-var_T, +var_T, +var_T, -var_T, -var_T];
 
 interior_is_inside = false;
 bound = obstacle(x_bound, y_bound, interior_is_inside);
-bound_interior = obstacle(x_bound_interior, y_bound_interior, true);
+
+clf
+bound.show()
+hold on
+plot(subject.x(1), subject.y(1), 'k', 'Marker', '*')
+
+% [x_bound_interior, y_bound_interior] = ginputc('Color', 'k');
+% mousePointCoords = ginput();
+% x_bound_interior = mousePointCoords(:,1);
+% y_bound_interior = mousePointCoords(:,2);
+% 
+% bound_interior = obstacle(x_bound_interior, y_bound_interior, true);
+% bound_interior.show()
 
 % Check if the boundary and unit normal vectors are correct !
 % figure(1)
@@ -44,10 +55,7 @@ bound_interior = obstacle(x_bound_interior, y_bound_interior, true);
 
 subject.time_evolution(t, [bound, bound_interior])
 
-clf
-bound.show()
-hold on
-bound_interior.show()
+
 plot(subject.x, subject.y)
 plot(subject.x(1), subject.y(1), 'k', 'Marker', '*')
 plot(subject.x(end), subject.y(end), 'r', 'Marker', '*')
