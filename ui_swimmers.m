@@ -2,19 +2,18 @@
 % Remember to cite intersections: https://www.mathworks.com/matlabcentral/fileexchange/11837-fast-and-robust-curve-intersections
 
 % Create custom particles (different radii, self propulsion velocities, ...)
-
-% Button to save particles and obstacles
-
+% Custom plotting region
+% Custom timestamps
 
 %% Set up environment
 addpath('ui')
 
-global user_obstacle_all user_particle_all fig h_trajectories h_obstacles
+global user_obstacle_all user_particle_all fig h_trajectories h_obstacles h_particles_initial
 user_obstacle_all = [];
 user_particle_all = [];
 h_trajectories = {};
 h_obstacles = {};
-
+h_particles_initial = {};
 
 %% Create figure
 fig = figure(2);
@@ -42,14 +41,20 @@ menu_miscellaneous = uimenu('Label','Miscellaneous');
 menu_clear_canvas     = uimenu(menu_miscellaneous, 'Label', 'Clear canvas', 'Callback', 'clear_bounding_box');
 menu_delete_particles = uimenu(menu_miscellaneous, 'Label', 'Delete particles', 'Callback', 'delete_particles');
 menu_delete_obstacles = uimenu(menu_miscellaneous, 'Label', 'Delete obstacles', 'Callback', 'delete_obstacles');
+menu_save_canvas      = uimenu(menu_miscellaneous, 'Label', 'Save obstacles and particles', 'Callback', 'save_canvas');
+
+menu_change_boundary  = uimenu(menu_miscellaneous, 'Label', 'Change bounding box');
+menu_rectangular_boundary = uimenu(menu_change_boundary, 'Label', 'Retangular', 'Callback', 'rectangular');
+menu_circular_boundary    = uimenu(menu_change_boundary, 'Label', 'Circular'  , 'Callback', 'circular');
 
 %% Plotting region (bounding box)
 var_T = 8.3e-7;
-x_bound = [-var_T, -var_T, +var_T, +var_T, -var_T];
-y_bound = [-var_T, +var_T, +var_T, -var_T, -var_T];
 interior_is_inside = false;
 
+x_bound = [-var_T, -var_T, +var_T, +var_T, -var_T];
+y_bound = [-var_T, +var_T, +var_T, -var_T, -var_T];
 bounding_box = obstacle(x_bound, y_bound, interior_is_inside);
+
 h_obstacles{1} = bounding_box.show();
 hold on
 

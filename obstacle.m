@@ -15,6 +15,7 @@ classdef obstacle < handle                       % Class simulating an experimen
       % Class constructor for an obstacle delimited by the polygon given by the points (x_bound, y_bound)
       % The region if the obstacle is inside the polygon, then valid_in = true.
       
+      
       % Make sure the boundary is a closed polygon
       if x_bound(end) ~= x_bound(1)
         x_bound(end) = x_bound(1);
@@ -96,6 +97,13 @@ classdef obstacle < handle                       % Class simulating an experimen
         line_y = [y_old; y_correct];
         
         [p_x, p_y, ~, ~] = intersections(line_x, line_y, obj.boundary_x, obj.boundary_y);
+        
+        if isempty(p_x)
+          disp("Aconteceu aquele OUTRO erro, tô fingindo que não vi tbm!")
+          x_correct = x_old + (x_old - x_wrong);
+          y_correct = y_old + (y_old - y_wrong);
+          return
+        end
         
         x_correct = p_x(1);
         y_correct = p_y(1);

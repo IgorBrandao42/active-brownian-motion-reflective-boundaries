@@ -77,7 +77,10 @@ classdef particle < handle                 % Class simulating an experiment with
         for j=1:length(obstacles)                % For each boundary
           if obstacles(j).was_penetrated(obj.x(k+1), obj.y(k+1))     % If the particle got inside the boundary
             [obj.x(k+1), obj.y(k+1)] = obstacles(j).reflect(obj.x(k), obj.y(k), obj.x(k+1), obj.y(k+1));     % Particle gets reflected upon hitting the boundary
-            j=1; % Handle multiple reflections
+            j=1;                                                                                             % Handle multiple reflections (MATLAB apparently does not care about this!)
+          elseif obstacles(j).was_penetrated(0.5*(obj.x(k)+obj.x(k+1)), 0.5*(obj.y(k)+obj.y(k+1))) % If the particle got inside the boundary
+            [obj.x(k+1), obj.y(k+1)] = obstacles(j).reflect(obj.x(k), obj.y(k), obj.x(k+1), obj.y(k+1));     % Particle gets reflected upon hitting the boundary
+            j=1;
           end
         end  % loop on boundaries
         
