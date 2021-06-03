@@ -1,6 +1,6 @@
 function user_obstacle()
 
-global fig
+global fig h_obstacles
 
 disp("User selection of obstacle!")              % Tell the user what is happening
 disp("Click to draw obstacle boundary and press key 'o' to stop")
@@ -33,7 +33,7 @@ delete(h1)                                       % Delete boundary so far
 fig.CurrentCharacter = 'q';
 
 user_obstacle = obstacle(xy(1, 1:i), xy(2, 1:i), true); % Create obstacle
-user_obstacle.show();                                % Show obstacle
+h_obstacles{end+1} = user_obstacle.show();                                % Show obstacle
 
 global user_obstacle_all
 user_obstacle_all = [user_obstacle_all, user_obstacle];

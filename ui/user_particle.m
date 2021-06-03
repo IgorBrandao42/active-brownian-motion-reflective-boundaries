@@ -1,5 +1,7 @@
 function user_particle()
 
+global h_trajectories user_particle_all
+
 disp("User selection of obstacle!")              % Tell the user what is happening
 disp("Click to anywhere inside plot to place a particle")
 
@@ -8,9 +10,8 @@ xy = ginput(1);                                  % Get first point
 
 %% Tenho que deixar o usuário escolher a angulação inicial, raio, velocidade e freq. angular !
 user_particle = particle(xy(1), xy(2), 0, 1e-6, 0, 0);
-user_particle.show();                            % Show particle
+h_trajectories{end+1} = user_particle.show();                            % Show particle
 
-global user_particle_all
 user_particle_all = [user_particle_all, user_particle];
 
 end

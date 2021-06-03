@@ -73,6 +73,13 @@ classdef obstacle < handle                       % Class simulating an experimen
       
       [p_x, p_y, ~, idx] = intersections(line_x, line_y, obj.boundary_x, obj.boundary_y);
       
+      if isempty(idx)
+        disp("Aconteceu aquele erro, tô fingindo que não vi!")
+        x_correct = x_old;
+        y_correct = y_old;
+        return
+      end
+      
       idx = floor(idx(1,1));
       
       r_wrong = [x_wrong; y_wrong];
@@ -109,9 +116,9 @@ classdef obstacle < handle                       % Class simulating an experimen
 %       end
     end
     
-    function show(obj)
+    function h = show(obj)
       pgon = polyshape(obj.boundary_x, obj.boundary_y);
-      plot(pgon, 'FaceColor', obj.color, 'FaceAlpha', obj.alpha)
+      h = plot(pgon, 'FaceColor', obj.color, 'FaceAlpha', obj.alpha);
       
 %       hold on
 %       

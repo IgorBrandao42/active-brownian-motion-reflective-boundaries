@@ -1,19 +1,31 @@
-% I am using intersections: https://www.mathworks.com/matlabcentral/fileexchange/11837-fast-and-robust-curve-intersections
-% Remember to cite!
+%% TO DO LIST
+% Remember to cite intersections: https://www.mathworks.com/matlabcentral/fileexchange/11837-fast-and-robust-curve-intersections
+
+% Create custom particles (different radii, self propulsion velocities, ...)
+
+% Button to save particles and obstacles
+
+
+%% Set up environment
 addpath('ui')
 
-global user_obstacle_all user_particle_all fig
-% user_obstacle_all = [];
-% user_particle_all = [];
+global user_obstacle_all user_particle_all fig h_trajectories h_obstacles
+user_obstacle_all = [];
+user_particle_all = [];
+h_trajectories = {};
+h_obstacles = {};
 
+
+%% Create figure
 fig = figure(2);
 clf
-fig.Color = [0 0.5 0.5];
-axis square
+% fig.Color = [0 0.5 0.5];
 
 fig.MenuBar = 'none';                           % Hide default menubar
 fig.ToolBar = 'figure';                         % Show toolbar
 
+
+%% Create menus
 menu_add = uimenu('Label', 'Add to canvas');
 menu_add_obstacle = uimenu(menu_add, 'Label', 'Add obstacle', 'Callback', 'user_obstacle');
 menu_add_particle = uimenu(menu_add, 'Label', 'Add particle', 'Callback', 'user_particle');
@@ -22,27 +34,30 @@ menu_simulation = uimenu('Label', 'Simulate');
 menu_simulate   = uimenu(menu_simulation, 'Label', 'Simulate', 'Callback', 'simulate');
 
 menu_show = uimenu('Label', 'Show');
-menu_show_obstacles = uimenu(menu_show, 'Label', 'Show trajectories', 'Callback', 'plot_obstacles');
+menu_show_obstacles = uimenu(menu_show, 'Label', 'Show obstacles'   , 'Callback', 'plot_obstacles');
 menu_show_traject   = uimenu(menu_show, 'Label', 'Show trajectories', 'Callback', 'plot_trajectories');
-menu_animate        = uimenu(menu_show, 'Label', 'Show animation', 'Callback', 'animate_particles');
+menu_animate        = uimenu(menu_show, 'Label', 'Show animation'   , 'Callback', 'animate_particles');
 
+menu_miscellaneous = uimenu('Label','Miscellaneous');
+menu_clear_canvas     = uimenu(menu_miscellaneous, 'Label', 'Clear canvas', 'Callback', 'clear_bounding_box');
+menu_delete_particles = uimenu(menu_miscellaneous, 'Label', 'Delete particles', 'Callback', 'delete_particles');
+menu_delete_obstacles = uimenu(menu_miscellaneous, 'Label', 'Delete obstacles', 'Callback', 'delete_obstacles');
 
-
-
-menu_clear_canvas = uimenu('Label', 'Clear canvas'     , 'Callback', 'clear_bounding_box');
-
-
-%% Plotting region
+%% Plotting region (bounding box)
 var_T = 8.3e-7;
 x_bound = [-var_T, -var_T, +var_T, +var_T, -var_T];
 y_bound = [-var_T, +var_T, +var_T, -var_T, -var_T];
 interior_is_inside = false;
 
 bounding_box = obstacle(x_bound, y_bound, interior_is_inside);
-bounding_box.show()
+h_obstacles{1} = bounding_box.show();
 hold on
 
+xlim(1.01*[-var_T, +var_T]);
+ylim(1.01*[-var_T, +var_T]);
 user_obstacle_all = bounding_box;
+
+axis square
 
 % user_obst = user_obstacle(fig);
 
