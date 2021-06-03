@@ -85,5 +85,19 @@ classdef particle < handle                 % Class simulating an experiment with
       
     end
     
+    function h = show(obj, end_time)
+      
+      if nargin == 1
+        end_time = length(obj.x);
+      end
+      
+      if length(obj.x) == 1
+        h = plot(obj.x(1), obj.y(1), 'Color', obj.color, 'Marker', '*');
+      else
+        h = plot(obj.x(1:end_time), obj.y(1:end_time), 'Color', obj.color);
+        
+      end
+    end
+    
   end % End methods
 end % End classdef
