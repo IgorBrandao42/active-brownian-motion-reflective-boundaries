@@ -16,7 +16,7 @@ h_obstacles = {};
 h_particles_initial = {};
 
 %% Create figure
-fig = figure(2);
+fig = figure('Name', "Microswimmer simulation");
 clf
 % fig.Color = [0 0.5 0.5];
 
