@@ -8,7 +8,7 @@
 %% Set up environment
 addpath('ui')
 
-global user_obstacle_all user_particle_all fig h_trajectories h_obstacles h_particles_initial
+global user_obstacle_all user_particle_all fig h_trajectories h_obstacles h_particles_initial ax_main
 user_obstacle_all = [];
 user_particle_all = [];
 h_trajectories = {};
@@ -36,9 +36,10 @@ menu_show = uimenu('Label', 'Show');
 menu_show_obstacles = uimenu(menu_show, 'Label', 'Show obstacles'   , 'Callback', 'plot_obstacles');
 menu_show_traject   = uimenu(menu_show, 'Label', 'Show trajectories', 'Callback', 'plot_trajectories');
 menu_animate        = uimenu(menu_show, 'Label', 'Show animation'   , 'Callback', 'animate_particles');
+menu_histograms     = uimenu(menu_show, 'Label', 'Show ensemble histograms', 'Callback', 'ensemble_histograms');
 
 menu_miscellaneous = uimenu('Label','Miscellaneous');
-menu_clear_canvas     = uimenu(menu_miscellaneous, 'Label', 'Clear canvas', 'Callback', 'clear_bounding_box');
+menu_clear_canvas     = uimenu(menu_miscellaneous, 'Label', 'Clear canvas'    , 'Callback', 'clear_bounding_box');
 menu_delete_particles = uimenu(menu_miscellaneous, 'Label', 'Delete particles', 'Callback', 'delete_particles');
 menu_delete_obstacles = uimenu(menu_miscellaneous, 'Label', 'Delete obstacles', 'Callback', 'delete_obstacles');
 menu_save_canvas      = uimenu(menu_miscellaneous, 'Label', 'Save obstacles and particles', 'Callback', 'save_canvas');
@@ -62,7 +63,10 @@ xlim(1.01*[-var_T, +var_T]);
 ylim(1.01*[-var_T, +var_T]);
 user_obstacle_all = bounding_box;
 
-axis square
+ax_main = gca;
+
+
+% axis square
 
 % user_obst = user_obstacle(fig);
 

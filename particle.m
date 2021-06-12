@@ -62,30 +62,36 @@ classdef particle < handle                 % Class simulating an experiment with
       A_R = sqrt(2*obj.D_R*dt);
       A_T = sqrt(2*obj.D_T*dt);
       
-      obj.x    = [obj.x(1)  , zeros([1, N_time-1])]; % Variable to store x position  at each time
-      obj.y    = [obj.y(1)  , zeros([1, N_time-1])]; % Variable to store x position  at each time
-      obj.phi  = [obj.phi(1), zeros([1, N_time-1])]; % Variable to store orientation at each time
+      obj.x    = [obj.x(1)  , zeros([1, N_time-1])];  % Variable to store x position  at each time
+      obj.y    = [obj.y(1)  , zeros([1, N_time-1])];  % Variable to store x position  at each time
+      obj.phi  = [obj.phi(1), zeros([1, N_time-1])];  % Variable to store orientation at each time
       
       for k = 1:N_time-1
-        % Euler-Maruyama method for stochastic integration
-        obj.x(k+1)   = obj.x(k) + obj.v*cos(obj.phi(k))*dt + A_T*w_x(k);
-        obj.y(k+1)   = obj.y(k) + obj.v*sin(obj.phi(k))*dt + A_T*w_y(k);
+        obj.x(k+1)   = obj.x(k)   + obj.v*cos(obj.phi(k))*dt + A_T*w_x(k);  % Euler-Maruyama method for stochastic integration
+        obj.y(k+1)   = obj.y(k)   + obj.v*sin(obj.phi(k))*dt + A_T*w_y(k);
+        obj.phi(k+1) = obj.phi(k) + obj.omega*dt             + A_R*w_phi(k);
         
-        obj.phi(k+1) = obj.phi(k) + obj.omega*dt + A_R*w_phi(k);
-        
-        % Handle border                          % For completness, I should make sure the particle was not reflected into another obstacle !
-        for j=1:length(obstacles)                % For each boundary
-          if obstacles(j).was_penetrated(obj.x(k+1), obj.y(k+1))     % If the particle got inside the boundary
-            [obj.x(k+1), obj.y(k+1)] = obstacles(j).reflect(obj.x(k), obj.y(k), obj.x(k+1), obj.y(k+1));     % Particle gets reflected upon hitting the boundary
-            j=1;                                                                                             % Handle multiple reflections (MATLAB apparently does not care about this!)
-          elseif obstacles(j).was_penetrated(0.5*(obj.x(k)+obj.x(k+1)), 0.5*(obj.y(k)+obj.y(k+1))) % If the particle got inside the boundary
-            [obj.x(k+1), obj.y(k+1)] = obstacles(j).reflect(obj.x(k), obj.y(k), obj.x(k+1), obj.y(k+1));     % Particle gets reflected upon hitting the boundary
-            j=1;
-          end
-        end  % loop on boundaries
-        
-      end  % loop on time
-      
+        obj.handle_borders(obstacles, k);             % Test if the new position is within an obstacle and correct the last position (reflection)
+      end
+    end
+    
+    function handle_borders(obj, obstacles, k)
+      reset_loop = true;                              % Make the while loop run at least one time !
+        while reset_loop                              % Make sure the particle was not previously reflected into another obstacle !
+          reset_loop = false;                         % Only redo the while loop if the particle was reflected
+          
+          for j=1:length(obstacles)                   % For each boundary
+            if obstacles(j).was_penetrated(obj.x(k+1), obj.y(k+1))  % If the particle got inside the boundary
+              [obj.x(k+1), obj.y(k+1)] = obstacles(j).reflect(obj, k);           % Reflect the particle on the boundary
+              reset_loop = true;                      % Redo everything to test if there it was reflected into another obstacle or in another region of the same obstacle
+              break                                   % Break out of inner loop
+            end  % if statement
+          end  % loop on boundaries
+          
+          % Tem um problema aqui, numa eventual segunda iteração do while loop, deveria considerar reflexão em relação a interseção do for-loop anterior com a fronteira
+          % Mas fazer isso vai ferrar a notação e é um caso muito específico pra um projeto desses !
+          
+        end  % loop on redoing boundaries
     end
     
     function h = show(obj, end_time)
@@ -95,9 +101,9 @@ classdef particle < handle                 % Class simulating an experiment with
       end
       
       if length(obj.x) == 1
-        h = plot(obj.x(1), obj.y(1), 'Color', obj.color, 'Marker', '*');
+        h = plot(obj.x(1), obj.y(1), 'Color', obj.color, 'Marker', '*', 'MarkerSize', 10);
       else
-        h = plot(obj.x(1:end_time), obj.y(1:end_time), 'Color', obj.color);
+        h = plot(obj.x(1:end_time), obj.y(1:end_time), 'Color', obj.color, 'Linewidth', 1);
         
       end
     end

@@ -3,3 +3,5 @@
 *.asv
 obstacle.asv
 *.mat
+clean.m
+Example_beautiful.fig
