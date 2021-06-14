@@ -8,12 +8,16 @@
 %% Set up environment
 addpath('ui')
 
-global user_obstacle_all user_particle_all fig h_trajectories h_obstacles h_particles_initial ax_main
+global user_obstacle_all user_particle_all fig h_trajectories h_obstacles h_particles_initial ax_main timestamps eta T
 user_obstacle_all = [];
 user_particle_all = [];
 h_trajectories = {};
 h_obstacles = {};
 h_particles_initial = {};
+
+timestamps = linspace(0, 6.25, 1e3);       % Timestamps for the simulation [s]
+T   = 300;                                 % Environmental temperature     [K]
+eta = 0.001;                               % Fluid viscosity               [N*s/m^2]
 
 %% Create figure
 fig = figure('Name', "Microswimmer simulation");
@@ -38,15 +42,21 @@ menu_show_traject   = uimenu(menu_show, 'Label', 'Show trajectories', 'Callback'
 menu_animate        = uimenu(menu_show, 'Label', 'Show animation'   , 'Callback', 'animate_particles');
 menu_histograms     = uimenu(menu_show, 'Label', 'Show ensemble histograms', 'Callback', 'ensemble_histograms');
 
-menu_miscellaneous = uimenu('Label','Miscellaneous');
-menu_clear_canvas     = uimenu(menu_miscellaneous, 'Label', 'Clear canvas'    , 'Callback', 'clear_bounding_box');
-menu_delete_particles = uimenu(menu_miscellaneous, 'Label', 'Delete particles', 'Callback', 'delete_particles');
-menu_delete_obstacles = uimenu(menu_miscellaneous, 'Label', 'Delete obstacles', 'Callback', 'delete_obstacles');
-menu_save_canvas      = uimenu(menu_miscellaneous, 'Label', 'Save obstacles and particles', 'Callback', 'save_canvas');
+menu_clear = uimenu('Label','Clear');
+menu_clear_canvas     = uimenu(menu_clear, 'Label', 'Clear canvas'    , 'Callback', 'clear_bounding_box');
+menu_delete_particles = uimenu(menu_clear, 'Label', 'Delete particles', 'Callback', 'delete_particles');
+menu_delete_obstacles = uimenu(menu_clear, 'Label', 'Delete obstacles', 'Callback', 'delete_obstacles');
 
-menu_change_boundary  = uimenu(menu_miscellaneous, 'Label', 'Change bounding box');
-menu_rectangular_boundary = uimenu(menu_change_boundary, 'Label', 'Retangular', 'Callback', 'rectangular');
-menu_circular_boundary    = uimenu(menu_change_boundary, 'Label', 'Circular'  , 'Callback', 'circular');
+menu_save_load = uimenu('Label','Save/load');
+menu_load_canvas      = uimenu(menu_save_load, 'Label', 'Load obstacles and particles', 'Callback', 'load_canvas');
+menu_save_canvas      = uimenu(menu_save_load, 'Label', 'Save obstacles and particles', 'Callback', 'save_canvas');
+
+menu_boundary  = uimenu('Label', 'Change bounding box');
+menu_rectangular_boundary = uimenu(menu_boundary, 'Label', 'Retangular', 'Callback', 'rectangular');
+menu_circular_boundary    = uimenu(menu_boundary, 'Label', 'Circular'  , 'Callback', 'circular');
+
+menu_environment  = uimenu('Label', 'Change parameters');
+menu_env          = uimenu(menu_environment, 'Label', 'Change parameters', 'Callback', 'change_parameters');
 
 %% Plotting region (bounding box)
 var_T = 8.3e-7;
@@ -65,19 +75,20 @@ user_obstacle_all = bounding_box;
 
 ax_main = gca;
 
+axis square
 
-% axis square
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+
 
 % user_obst = user_obstacle(fig);
 
-
-
-
-
 % plot(subject.x, subject.y)
 % plot(subject.x(end), subject.y(end), 'r', 'Marker', '*')
-
-
 
 % x0     = -0.1e-6;                                     % Initial x coordinate [m]
 % y0     = +0.0e-6;                                     % Initial y coordinate [m]
@@ -89,8 +100,6 @@ ax_main = gca;
 % subject = particle(x0, y0, phi0, R0, v0, omega0);
 % subject.show();
 
-
-
 % Small square
 % var_T = 0.1*var_T;
 % x_bound_interior = [-var_T, -var_T, +var_T, +var_T, -var_T];
@@ -99,8 +108,6 @@ ax_main = gca;
 % Triangle
 % x_bound = [-var_T, -var_T, +var_T, -var_T];
 % y_bound = [-var_T, +var_T, +var_T, -var_T];
-
-
 
 % N_time = 1e3;
 % t = linspace(0, 6.25, N_time);
@@ -126,9 +133,6 @@ ax_main = gca;
 %   
 %   subject.phi(k+1) = subject.x(k) + subject.omega*dt + A_R*w_phi(k);
 % end  % loop on time
-
-
-% end
 
 
 

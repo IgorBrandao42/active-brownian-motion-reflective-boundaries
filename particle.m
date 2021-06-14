@@ -15,7 +15,7 @@ classdef particle < handle                 % Class simulating an experiment with
   end
   
   methods
-    function obj = particle(x0, y0, phi0, R0, v0, omega0, color0)
+    function obj = particle(x0, y0, phi0, R0, v0, omega0, T, eta, color0)
       % Class constructor for a spherical particle with radius R and color color0
       % initially at position (x0,y0) and orientation phi0
       
@@ -27,16 +27,19 @@ classdef particle < handle                 % Class simulating an experiment with
       obj.v = v0;
       obj.omega = omega0;
       
-      if nargin < 7
+      if nargin < 9
         obj.color = rand(3,1);
       else
         obj.color = color0;
       end
       
+      if nargin < 7
+        T   = 300;                                 % Environmental temperature [K]
+        eta = 0.001;                               % Fluid viscosity           [N*s/m^2]
+      end
+      
       % Contants for the calculation of the diffusion coefficients
       k_B = 1.380649e-23;                        % Boltzmann's constant      [J/K]
-      T   = 300;                                 % Environmental temperature [K]
-      eta = 0.001;                               % Fluid viscosity           [N*s/m^2]
       
       obj.D_T = k_B*T/(6*pi*eta*R0);             % [metre^2/s] = 1e-12*[micrometer^2/s]
       obj.D_R = k_B*T/(8*pi*eta*R0^3);           % [rad^2/s]

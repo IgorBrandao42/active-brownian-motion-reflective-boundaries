@@ -1,6 +1,6 @@
 function user_particle()
 
-global h_particles_initial user_particle_all
+global h_particles_initial user_particle_all eta T
 
 ButtonName = questdlg('What kind of particle?', 'Particle selection', 'Brownian motion', 'Microswimmer', 'Ensemble', 'Brownian motion');
 
@@ -42,7 +42,7 @@ xy = ginput(1);                                  % Get first point
 
 
 for i=1:N_ensemble
-  user_particle = particle(xy(1), xy(2), phi0, R0, v0, omega0);                 % Create instance of particle
+  user_particle = particle(xy(1), xy(2), phi0, R0, v0, omega0, T, eta);                 % Create instance of particle
   h_particles_initial{end+1} = user_particle.show();                            % Show particle
   
   user_particle_all = [user_particle_all, user_particle];
