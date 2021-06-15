@@ -67,7 +67,11 @@ classdef obstacle < handle                       % Class simulating an experimen
       
     end
     
-    function [x_correct, y_correct] = reflect(obj, x_old, y_old, x_wrong, y_wrong)
+    function [x_correct, y_correct] = reflect(obj, particle, k)
+      x_old   = particle.x(k);
+      y_old   = particle.y(k);
+      x_wrong = particle.x(k+1);
+      y_wrong = particle.y(k+1);
       
       line_x = [x_old; x_wrong];
       line_y = [y_old; y_wrong];
@@ -141,7 +145,66 @@ classdef obstacle < handle                       % Class simulating an experimen
 end  % End classdef
 
 
-% 
+
+% function [x_correct, y_correct] = reflect_OLD(obj, x_old, y_old, x_wrong, y_wrong)
+%       
+%       line_x = [x_old; x_wrong];
+%       line_y = [y_old; y_wrong];
+%       
+%       [p_x, p_y, ~, idx] = intersections(line_x, line_y, obj.boundary_x, obj.boundary_y);
+%       
+%       if isempty(idx)
+%         disp("Aconteceu aquele erro, tô fingindo que não vi!")
+%         x_correct = x_old;
+%         y_correct = y_old;
+%         return
+%       end
+%       
+%       idx = floor(idx(1,1));
+%       
+%       r_wrong = [x_wrong; y_wrong];
+%       p = [p_x(1); p_y(1)];
+%       n = obj.normal_vec(:, idx);
+%       
+%       r_correct = r_wrong - 2*dot(r_wrong - p, n)*n;
+%       
+%       x_correct = r_correct(1);
+%       y_correct = r_correct(2);
+%       
+%       if obj.was_penetrated(x_correct, y_correct)                       % After the reflection, the particle can leak through another segment of the boundary !
+%         line_x = [x_old; x_correct];                                    % Instead of infinite reflections, just stop it at the intersection with this other segment
+%         line_y = [y_old; y_correct];
+%         
+%         [p_x, p_y, ~, ~] = intersections(line_x, line_y, obj.boundary_x, obj.boundary_y);
+%         
+%         if isempty(p_x)
+%           disp("Aconteceu aquele OUTRO erro, tô fingindo que não vi tbm!")
+%           x_correct = x_old + (x_old - x_wrong);
+%           y_correct = y_old + (y_old - y_wrong);
+%           return
+%         end
+%         
+%         x_correct = p_x(1);
+%         y_correct = p_y(1);
+%       end
+%       
+%       
+% %       if isempty(idx)
+% %         x_correct = 2;
+% %       end
+%       
+% %       if obj.was_penetrated(x_correct, y_correct)
+% %         obj.show()
+% %         hold on
+% %         plot([x_old, x_wrong],[y_old, y_wrong])
+% %         plot(x_old,y_old, 'k*')
+% %         plot(x_correct, y_correct, 'b*')
+% %         disp("Boundary is too skew and resolution too low!")
+% %       end
+%     end
+    
+
+ 
 % line = [[x_old, x_wrong];
 %   [y_old, y_wrong]];
 % 

@@ -11,7 +11,7 @@ y_bound_circle = var_T*sin(theta);
 
 bounding_box = obstacle(x_bound_circle, y_bound_circle, interior_is_inside);
 
-delete(h_obstacles{1})
+delete(h_obstacles{1});
 h_obstacles{1} = bounding_box.show();
 
 if length(user_obstacle_all) == 1
